@@ -1,0 +1,8 @@
+pre-commit:
+  jobs:
+    - name: lint 
+      run: npx eslint {staged_files}
+      glob: "*.{js,ts,jsx,tsx,vue}"
+
+    - name: typescript
+      run: npm run typescript
