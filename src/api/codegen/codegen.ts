@@ -2,9 +2,7 @@ import { generateApi } from 'swagger-typescript-api'
 
 const OPENAPI_SCHEMA_URL = 'http://localhost:3001/api-json'
 
-console.log(process.cwd())
-
-await generateApi({
+generateApi({
 	name: 'api.ts',
 	url: OPENAPI_SCHEMA_URL,
 	singleHttpClient: true,
@@ -17,7 +15,5 @@ await generateApi({
 	generateUnionEnums: true,
 	patch: true,
 	generateClient: true,
-	output: `${process.cwd()}/api/generated`,
+	output: `${process.cwd()}/src/api/generated`,
 })
-
-export default {}

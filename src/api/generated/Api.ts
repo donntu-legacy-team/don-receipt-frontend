@@ -1,5 +1,6 @@
 /* eslint-disable */
 /* tslint:disable */
+// @ts-nocheck
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -77,7 +78,7 @@ export interface UsersControllerCreateUserData {
 export type UsersControllerCreateUserError = ErrorDto;
 
 export interface CategoriesControllerGetCategoriesData {
-  categories?: CategoryDto;
+  categories?: CategoryDto[];
 }
 
 export type CategoriesControllerGetCategoriesError = ErrorDto;

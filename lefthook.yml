@@ -1,8 +1,9 @@
 pre-commit:
+  parallel: true
   jobs:
     - name: lint 
-      run: npx eslint {staged_files}
-      glob: "*.{js,ts,jsx,tsx,vue}"
+      run: npm run lint {staged_files}
 
     - name: typescript
       run: npm run typescript
+      glob: "*.{js,ts,jsx,tsx}"

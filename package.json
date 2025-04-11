@@ -1,33 +1,39 @@
 {
-  "name": "nuxt-app",
+  "name": "don-receipt-frontend",
+  "version": "0.1.0",
   "private": true,
-  "type": "module",
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
-    "lint": "eslint .",
-    "typescript": "nuxi typecheck",
-    "lint:fix": "eslint . --fix",
-    "api": "tsx ./api/codegen"
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typescript": "tsc",
+    "api": "tsx ./src/api/codegen"
   },
   "dependencies": {
-    "@nuxt/eslint": "^1.3.0",
     "axios": "^1.8.4",
-    "eslint": "^9.24.0",
-    "nuxt": "^3.16.2",
-    "vue": "^3.5.13",
-    "vue-router": "^4.5.0"
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.487.0",
+    "next": "15.3.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwind-merge": "^3.2.0",
+    "tw-animate-css": "^1.2.5"
   },
   "devDependencies": {
-    "@types/node": "^22.14.0",
-    "lefthook": "^1.11.6",
-    "swagger-typescript-api": "^13.0.15",
-    "ts-node": "^10.9.2",
+    "@eslint/eslintrc": "^3",
+    "@stylistic/eslint-plugin": "^4.2.0",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.0",
+    "lefthook": "^1.11.9",
+    "swagger-typescript-api": "^13.0.23",
+    "tailwindcss": "^4",
     "tsx": "^4.19.3",
-    "typescript": "^5.8.3",
-    "vue-tsc": "^2.2.8"
+    "typescript": "^5"
   }
 }
