@@ -3,7 +3,7 @@
 import Link from 'next/link'
 
 export type LogoProps = {
-	href?: string 
+	href?: string, 
 }
 
 export const Logo = ({ href }: LogoProps) => {

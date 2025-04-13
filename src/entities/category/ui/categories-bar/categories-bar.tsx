@@ -4,7 +4,7 @@ import type { Category } from '../../model/'
 
 
 export type CategoriesBarProps = {
-	categories: Category[]
+	categories: Category[],
 }
 
 export const CategoriesBar = ({ categories }: CategoriesBarProps) => (
