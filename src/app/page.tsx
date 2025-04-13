@@ -1,25 +1,22 @@
-"use client"
-import { useEffect, useState } from 'react'
-import { useApi } from '@/lib/use-api'
-import { CategoryDto } from '@/api/generated/Api'
+import { CategoriesBar } from '@/entities/category/ui/categories-bar'
+import { getApi } from '@/shared/api'
 
-export default function Home() {
-  const api = useApi()
+const Home = async () => {
+	const {
+		categoryApi,
+	} = getApi()
 
-  const [categories, setCategories] = useState<CategoryDto[]>() 
+	const { categories } = await categoryApi.getCategories()
 
-  useEffect(() => {
-    (async () => {
-      const { data } = await api.categories.categoriesControllerGetCategories()
-      if (data) {
-        setCategories(data.categories)
-      }
-    })()
-  }, [])
-
-  return (
-    <div>
-      {JSON.stringify(categories)}
-    </div>
-  )
+	return (
+		<div>
+			{categories && (
+				<CategoriesBar
+					categories={categories}
+				/>
+			)}
+		</div>			
+	)
 }
+
+export default Home
