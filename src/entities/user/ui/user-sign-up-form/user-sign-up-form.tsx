@@ -29,6 +29,7 @@ export const UserSignUpForm = (props: UserSignUpFormProps) => {
 			return
 		}
 
+		// TODO: убрать, когда появится api под регистрацию
 		console.log(values)
 	}
 
@@ -68,7 +69,7 @@ export const UserSignUpForm = (props: UserSignUpFormProps) => {
 						<FormItem>
 							<FormLabel>Пароль</FormLabel>
 							<FormControl>
-								<Input placeholder="qwerty1234" {...field} />
+								<Input placeholder="qwerty1234" type="password" {...field} />
 							</FormControl>
 							<FormMessage/>
 						</FormItem>
@@ -81,7 +82,7 @@ export const UserSignUpForm = (props: UserSignUpFormProps) => {
 						<FormItem>
 							<FormLabel>Подтвердите пароль</FormLabel>
 							<FormControl>
-								<Input placeholder="qwerty1234" {...field} />
+								<Input placeholder="qwerty1234" type="password" {...field} />
 							</FormControl>
 							<FormMessage/>
 						</FormItem>
