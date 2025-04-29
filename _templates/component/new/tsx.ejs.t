@@ -2,7 +2,7 @@
 to: src/<%=path%>/<%=h.changeCase.paramCase(name)%>/<%=h.changeCase.paramCase(name)%>.tsx
 ---
 export type <%=h.changeCase.pascalCase(name)%>Props = {
-	example?: string;
+	example?: string,
 }
 
 export const <%=h.changeCase.pascalCase(name)%> = (props: <%=h.changeCase.pascalCase(name)%>Props) => {

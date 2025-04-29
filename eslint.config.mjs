@@ -1,4 +1,4 @@
-import { dirname } from 'path'
+import { delimiter, dirname } from 'path'
 import { fileURLToPath } from 'url'
 import { FlatCompat } from '@eslint/eslintrc'
 
@@ -24,6 +24,14 @@ const eslintConfig = [
 			'@stylistic/block-spacing': ['warn', 'always'],
 			'@stylistic/object-curly-spacing': ['warn', 'always'],
 			'@stylistic/indent': ['warn', 'tab'],
+			'@stylistic/member-delimiter-style': ['warn', {
+				multiline: {
+				  delimiter: 'comma',
+				},
+				singleline: {
+				  delimiter: 'comma',
+				},
+			  }]
 		},
 	},
 ]
