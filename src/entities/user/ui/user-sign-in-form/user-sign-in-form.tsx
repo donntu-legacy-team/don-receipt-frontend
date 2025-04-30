@@ -27,6 +27,7 @@ export const UserSignInForm = (props: UserSignInFormProps) => {
 			return
 		}
 	
+		// TODO: убрать, когда появится api под авторизацию
 		console.log(values)
 	}
 
