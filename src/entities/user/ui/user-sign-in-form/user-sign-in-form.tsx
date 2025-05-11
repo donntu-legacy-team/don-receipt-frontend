@@ -22,13 +22,7 @@ export const UserSignInForm = (props: UserSignInFormProps) => {
 	})
 
 	const onSubmit = (values: UserSignInFormValues) => {
-		if (props.onSubmit) {
-			props.onSubmit(values)
-			return
-		}
-	
-		// TODO: убрать, когда появится api под авторизацию
-		console.log(values)
+		props.onSubmit?.(values)
 	}
 
 	return (

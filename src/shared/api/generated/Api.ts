@@ -76,9 +76,11 @@ export interface CreateUserDto {
   password: string;
 }
 
-export interface UsersControllerGetUserByIdParams {
-  id: number;
+export interface UsersControllerGetCurrentUserData {
+  user?: UserDto;
 }
+
+export type UsersControllerGetCurrentUserError = ErrorDto;
 
 export interface UsersControllerGetUserByIdData {
   user?: UserDto;
@@ -97,12 +99,6 @@ export type AuthControllerLoginError = ErrorDto;
 export type AuthControllerRefreshData = TokensPairDto;
 
 export type AuthControllerRefreshError = ErrorDto;
-
-export interface AuthControllerGetCurrentUserData {
-  user?: UserDto;
-}
-
-export type AuthControllerGetCurrentUserError = ErrorDto;
 
 export interface AuthControllerRegisterData {
   user?: UserDto;
@@ -245,7 +241,7 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title DonReceipt api
+ * @title DonReceipt API
  * @version 1.0
  * @contact
  */
@@ -256,22 +252,44 @@ export class Api<SecurityDataType extends unknown> {
     this.http = http;
   }
 
-  users = {
+  user = {
+    /**
+     * No description
+     *
+     * @tags Users
+     * @name UsersControllerGetCurrentUser
+     * @summary Получить информацию о текущем пользователе
+     * @request GET:/user
+     * @secure
+     * @response `200` `UsersControllerGetCurrentUserData` Возвращает данные пользователя
+     * @response `401` `ErrorDto` Неверный access токен
+     */
+    usersControllerGetCurrentUser: (params: RequestParams = {}) =>
+      this.http.request<UsersControllerGetCurrentUserData, UsersControllerGetCurrentUserError>({
+        path: `/user`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
     /**
      * No description
      *
      * @tags Users
      * @name UsersControllerGetUserById
-     * @summary Найти пользователя по id
-     * @request GET:/users
-     * @response `200` `UsersControllerGetUserByIdData` User retrieved successfully
-     * @response `404` `ErrorDto` User not found
+     * @summary Получить пользователя по id (admin only)
+     * @request GET:/user/{id}
+     * @secure
+     * @response `200` `UsersControllerGetUserByIdData` Данные пользователя
+     * @response `403` `ErrorDto` Недостаточно прав
+     * @response `404` `ErrorDto` Пользователь не найден
      */
-    usersControllerGetUserById: (query: UsersControllerGetUserByIdParams, params: RequestParams = {}) =>
+    usersControllerGetUserById: (id: number, params: RequestParams = {}) =>
       this.http.request<UsersControllerGetUserByIdData, UsersControllerGetUserByIdError>({
-        path: `/users`,
+        path: `/user/${id}`,
         method: "GET",
-        query: query,
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -323,7 +341,7 @@ export class Api<SecurityDataType extends unknown> {
      * @summary Обновление токенов
      * @request POST:/auth/refresh
      * @response `200` `AuthControllerRefreshData` Возвращает новые accessToken и refreshToken
-     * @response `400` `ErrorDto` Неверный refresh токен
+     * @response `401` `ErrorDto` Неверный refresh токен
      */
     authControllerRefresh: (data: RefreshTokenDto, params: RequestParams = {}) =>
       this.http.request<AuthControllerRefreshData, AuthControllerRefreshError>({
@@ -339,29 +357,11 @@ export class Api<SecurityDataType extends unknown> {
      * No description
      *
      * @tags Авторизация
-     * @name AuthControllerGetCurrentUser
-     * @summary Получить информацию о текущем пользователе
-     * @request GET:/auth/user
-     * @response `200` `AuthControllerGetCurrentUserData` Возвращает данные пользователя
-     * @response `400` `ErrorDto` Неверный access токен
-     */
-    authControllerGetCurrentUser: (params: RequestParams = {}) =>
-      this.http.request<AuthControllerGetCurrentUserData, AuthControllerGetCurrentUserError>({
-        path: `/auth/user`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags Авторизация
      * @name AuthControllerRegister
      * @summary Регистрация пользователя
      * @request POST:/auth/register
-     * @response `200` `AuthControllerRegisterData` User created successfully
-     * @response `400` `ErrorDto` User with this username or email already exists
+     * @response `200` `AuthControllerRegisterData` Пользователь зарегистрирован успешно
+     * @response `400` `ErrorDto` Пользователь с таким логином или email уже существует
      */
     authControllerRegister: (data: CreateUserDto, params: RequestParams = {}) =>
       this.http.request<AuthControllerRegisterData, AuthControllerRegisterError>({

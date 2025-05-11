@@ -9,9 +9,9 @@ export type LoginButtonProps = {
 export const LoginButton = ({ signInHref }: LoginButtonProps) => {
 	return (
 		<Link href={signInHref} className={buttonVariants({ variant: 'default' })}>
-			<div className="flex gap-2 items-center">
+			<div className="flex gap-1 items-center">
 				<span className="font-medium text-sm">Войти</span>{''}
-				<UserIcon />
+				<UserIcon height="20px"/>
 			</div>
 		</Link>
 	)

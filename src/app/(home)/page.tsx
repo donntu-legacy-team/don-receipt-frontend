@@ -1,21 +1,14 @@
 import { CategoriesBar } from '@/entities/category/ui/categories-bar'
-import { getApi } from '@/shared/api'
+import { prefetchCategories } from '@/entities/category/api'
+import { QueryHydrationBoundary } from '@/shared/ui/query-hydration-boundary'
 
 const Home = async () => {
-	const {
-		categoryApi,
-	} = getApi()
-
-	const { categories } = await categoryApi.getCategories()
+	await prefetchCategories()
 
 	return (
-		<div>
-			{categories && (
-				<CategoriesBar
-					categories={categories}
-				/>
-			)}
-		</div>			
+		<QueryHydrationBoundary>
+			<CategoriesBar/>			
+		</QueryHydrationBoundary>
 	)
 }
 

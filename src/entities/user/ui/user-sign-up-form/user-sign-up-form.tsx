@@ -24,13 +24,7 @@ export const UserSignUpForm = (props: UserSignUpFormProps) => {
 	})
 
 	const onSubmit = (values: UserSignUpFormValues) => {
-		if (props.onSubmit) {
-			props.onSubmit(values)
-			return
-		}
-
-		// TODO: убрать, когда появится api под регистрацию
-		console.log(values)
+		props.onSubmit?.(values)
 	}
 
 	return (

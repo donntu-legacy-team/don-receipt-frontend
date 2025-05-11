@@ -1,6 +1,6 @@
-import { delimiter, dirname } from 'path'
-import { fileURLToPath } from 'url'
 import { FlatCompat } from '@eslint/eslintrc'
+import { dirname } from 'path'
+import { fileURLToPath } from 'url'
 
 import stylistic from '@stylistic/eslint-plugin'
 
@@ -26,12 +26,12 @@ const eslintConfig = [
 			'@stylistic/indent': ['warn', 'tab'],
 			'@stylistic/member-delimiter-style': ['warn', {
 				multiline: {
-				  delimiter: 'comma',
+					delimiter: 'comma',
 				},
 				singleline: {
-				  delimiter: 'comma',
+					delimiter: 'comma',
 				},
-			  }]
+			}],
 		},
 	},
 ]
