@@ -6,8 +6,6 @@ import { withAuthorization } from './wrapper/with-authorization'
 import { withUnauthorizedHandler } from './wrapper/with-unauthorized-handler'
 import { UserApi } from './services/user.api'
 
-export { ServiceHandleError } from './wrapper/service-handle-error'
-
 class Gateway {
 	categoryApi: CategoryApi
 	authApi: AuthApi
