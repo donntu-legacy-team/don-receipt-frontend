@@ -1,7 +1,6 @@
-import { LoginButton } from '@/entities/user/ui/login-button'
-import { ROUTES } from '@/shared/lib/routes'
 import { Header } from '@/shared/ui/header'
 import { Logo } from '@/shared/ui/logo'
+import { UserButton } from '@/widgets/user/ui/user-button'
 
 export type HomeLayoutProps = {
 	children: React.ReactNode,
@@ -12,7 +11,7 @@ const HomeLayout = ({ children }: HomeLayoutProps) => {
 		<>
 			<Header
 				leftContent={<Logo/>}
-				rightContent={<LoginButton signInHref={ROUTES.SIGN_IN}/>}
+				rightContent={<UserButton/>}
 			/>
 			{children}
 		</>

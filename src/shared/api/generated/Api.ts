@@ -1,6 +1,5 @@
 /* eslint-disable */
 /* tslint:disable */
-// @ts-nocheck
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -25,12 +24,6 @@ export interface UserDto {
 
 export interface ErrorDto {
   message: string;
-}
-
-export interface CreateUserDto {
-  username: string;
-  email: string;
-  password: string;
 }
 
 export interface SubcategoryDto {
@@ -61,9 +54,33 @@ export interface CategoryDto {
   subcategories: SubcategoryDto[];
 }
 
-export interface UsersControllerGetUserByIdParams {
-  id: number;
+export interface TokensPairDto {
+  /** Access Token */
+  accessToken: string;
+  /** Refresh Token */
+  refreshToken: string;
 }
+
+export interface LoginDto {
+  username: string;
+  password: string;
+}
+
+export interface RefreshTokenDto {
+  refreshToken: string;
+}
+
+export interface CreateUserDto {
+  username: string;
+  email: string;
+  password: string;
+}
+
+export interface UsersControllerGetCurrentUserData {
+  user?: UserDto;
+}
+
+export type UsersControllerGetCurrentUserError = ErrorDto;
 
 export interface UsersControllerGetUserByIdData {
   user?: UserDto;
@@ -71,17 +88,23 @@ export interface UsersControllerGetUserByIdData {
 
 export type UsersControllerGetUserByIdError = ErrorDto;
 
-export interface UsersControllerCreateUserData {
-  user?: UserDto;
-}
-
-export type UsersControllerCreateUserError = ErrorDto;
-
 export interface CategoriesControllerGetCategoriesData {
   categories?: CategoryDto[];
 }
 
-export type CategoriesControllerGetCategoriesError = ErrorDto;
+export type AuthControllerLoginData = TokensPairDto;
+
+export type AuthControllerLoginError = ErrorDto;
+
+export type AuthControllerRefreshData = TokensPairDto;
+
+export type AuthControllerRefreshError = ErrorDto;
+
+export interface AuthControllerRegisterData {
+  user?: UserDto;
+}
+
+export type AuthControllerRegisterError = ErrorDto;
 
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from "axios";
 import axios from "axios";
@@ -218,7 +241,7 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title DonReceipt api
+ * @title DonReceipt API
  * @version 1.0
  * @contact
  */
@@ -229,22 +252,23 @@ export class Api<SecurityDataType extends unknown> {
     this.http = http;
   }
 
-  users = {
+  user = {
     /**
      * No description
      *
      * @tags Users
-     * @name UsersControllerGetUserById
-     * @summary Найти пользователя по id
-     * @request GET:/users
-     * @response `200` `UsersControllerGetUserByIdData` User retrieved successfully
-     * @response `404` `ErrorDto` User not found
+     * @name UsersControllerGetCurrentUser
+     * @summary Получить информацию о текущем пользователе
+     * @request GET:/user
+     * @secure
+     * @response `200` `UsersControllerGetCurrentUserData` Возвращает данные пользователя
+     * @response `401` `ErrorDto` Неверный access токен
      */
-    usersControllerGetUserById: (query: UsersControllerGetUserByIdParams, params: RequestParams = {}) =>
-      this.http.request<UsersControllerGetUserByIdData, UsersControllerGetUserByIdError>({
-        path: `/users`,
+    usersControllerGetCurrentUser: (params: RequestParams = {}) =>
+      this.http.request<UsersControllerGetCurrentUserData, UsersControllerGetCurrentUserError>({
+        path: `/user`,
         method: "GET",
-        query: query,
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -253,18 +277,19 @@ export class Api<SecurityDataType extends unknown> {
      * No description
      *
      * @tags Users
-     * @name UsersControllerCreateUser
-     * @summary Создать пользователя
-     * @request POST:/users
-     * @response `200` `UsersControllerCreateUserData` User created successfully
-     * @response `400` `ErrorDto` User with this username or email already exists
+     * @name UsersControllerGetUserById
+     * @summary Получить пользователя по id (admin only)
+     * @request GET:/user/{id}
+     * @secure
+     * @response `200` `UsersControllerGetUserByIdData` Данные пользователя
+     * @response `403` `ErrorDto` Недостаточно прав
+     * @response `404` `ErrorDto` Пользователь не найден
      */
-    usersControllerCreateUser: (data: CreateUserDto, params: RequestParams = {}) =>
-      this.http.request<UsersControllerCreateUserData, UsersControllerCreateUserError>({
-        path: `/users`,
-        method: "POST",
-        body: data,
-        type: ContentType.Json,
+    usersControllerGetUserById: (id: number, params: RequestParams = {}) =>
+      this.http.request<UsersControllerGetUserByIdData, UsersControllerGetUserByIdError>({
+        path: `/user/${id}`,
+        method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),
@@ -278,12 +303,72 @@ export class Api<SecurityDataType extends unknown> {
      * @summary Получить все категории c их подкатегориями
      * @request GET:/categories
      * @response `200` `CategoriesControllerGetCategoriesData`
-     * @response `404` `ErrorDto` Categories not found
      */
     categoriesControllerGetCategories: (params: RequestParams = {}) =>
-      this.http.request<CategoriesControllerGetCategoriesData, CategoriesControllerGetCategoriesError>({
+      this.http.request<CategoriesControllerGetCategoriesData, any>({
         path: `/categories`,
         method: "GET",
+        format: "json",
+        ...params,
+      }),
+  };
+  auth = {
+    /**
+     * No description
+     *
+     * @tags Авторизация
+     * @name AuthControllerLogin
+     * @summary Вход пользователя и получение токенов
+     * @request POST:/auth/login
+     * @response `200` `AuthControllerLoginData` Возвращает accessToken и refreshToken
+     * @response `401` `ErrorDto` Неверные учетные данные
+     */
+    authControllerLogin: (data: LoginDto, params: RequestParams = {}) =>
+      this.http.request<AuthControllerLoginData, AuthControllerLoginError>({
+        path: `/auth/login`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Авторизация
+     * @name AuthControllerRefresh
+     * @summary Обновление токенов
+     * @request POST:/auth/refresh
+     * @response `200` `AuthControllerRefreshData` Возвращает новые accessToken и refreshToken
+     * @response `401` `ErrorDto` Неверный refresh токен
+     */
+    authControllerRefresh: (data: RefreshTokenDto, params: RequestParams = {}) =>
+      this.http.request<AuthControllerRefreshData, AuthControllerRefreshError>({
+        path: `/auth/refresh`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Авторизация
+     * @name AuthControllerRegister
+     * @summary Регистрация пользователя
+     * @request POST:/auth/register
+     * @response `200` `AuthControllerRegisterData` Пользователь зарегистрирован успешно
+     * @response `400` `ErrorDto` Пользователь с таким логином или email уже существует
+     */
+    authControllerRegister: (data: CreateUserDto, params: RequestParams = {}) =>
+      this.http.request<AuthControllerRegisterData, AuthControllerRegisterError>({
+        path: `/auth/register`,
+        method: "POST",
+        body: data,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),

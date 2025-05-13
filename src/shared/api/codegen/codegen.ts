@@ -15,5 +15,5 @@ generateApi({
 	generateUnionEnums: true,
 	patch: true,
 	generateClient: true,
-	output: `${process.cwd()}/src/api/generated`,
+	output: `${process.cwd()}/src/shared/api/generated`,
 })

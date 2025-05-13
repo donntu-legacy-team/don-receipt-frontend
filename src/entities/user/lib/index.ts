@@ -1,1 +1,2 @@
-// Public API exports for the lib segment 
+export { useUser } from './use-user'
+export { useAuth } from './use-auth'

@@ -1,7 +1,8 @@
+import { Toaster } from '@/shared/ui/sonner'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
+import { ThemeProvider, QueryProvider } from './providers'
 import './styles/globals.css'
-import { ThemeProvider } from './providers/theme-provider'
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -22,6 +23,7 @@ export type RootLayoutProps = Readonly<{
 	children: React.ReactNode,
 }>
 
+
 const RootLayout = ({ children }: RootLayoutProps) => {
 	return (
 		<html
@@ -30,16 +32,19 @@ const RootLayout = ({ children }: RootLayoutProps) => {
 			className="min-h-screen"
 		>
 			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+				className={`${geistSans.variable} ${geistMono.variable} antialiased h-svh`}
 			>
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="light"
-					enableSystem
-					disableTransitionOnChange
-				>
-					{children}
-				</ThemeProvider>
+				<QueryProvider>
+					<ThemeProvider
+						attribute="class"
+						defaultTheme="light"
+						enableSystem
+						disableTransitionOnChange
+					>
+						{children}
+						<Toaster/>
+					</ThemeProvider>
+				</QueryProvider>
 			</body>
 		</html>
 	)

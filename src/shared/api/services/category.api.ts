@@ -5,6 +5,7 @@ export class CategoryApi {
 
 	async getCategories() {
 		const { data } = await this.api.categories.categoriesControllerGetCategories()
-		return data
+		
+		return data.categories
 	}
 }
