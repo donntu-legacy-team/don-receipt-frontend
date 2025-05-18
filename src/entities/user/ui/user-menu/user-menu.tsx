@@ -1,10 +1,11 @@
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/shared/ui/dropdown-menu'
-import { LogOutIcon } from 'lucide-react'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/shared/ui/dropdown-menu'
+import { LogOutIcon, UserRoundCogIcon } from 'lucide-react'
 import { ReactNode } from 'react'
 
 export type UserMenuProps = {
 	menuTrigger: ReactNode,
-	onSignOutClick: () => void,
+	onSignOutClick?: () => void,
+	onMyProfileClick?: () => void,
 }
 
 export const UserMenu = (props: UserMenuProps) => {
@@ -14,12 +15,24 @@ export const UserMenu = (props: UserMenuProps) => {
 				{props.menuTrigger}
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
-				<DropdownMenuItem
-					onClick={props.onSignOutClick}
-				>
-					<LogOutIcon/>
-					<span>Выйти</span>
-				</DropdownMenuItem>
+				{props.onMyProfileClick && (
+					<DropdownMenuItem
+						onClick={props.onMyProfileClick}
+					>
+						<UserRoundCogIcon size="20px"/>
+						<span>Мой профиль</span>
+					</DropdownMenuItem>
+				)}
+				<DropdownMenuSeparator/>
+				{props.onSignOutClick && (
+					<DropdownMenuItem
+						className="text-destructive"
+						onClick={props.onSignOutClick}
+					>
+						<LogOutIcon size="20px"/>
+						<span>Выйти</span>
+					</DropdownMenuItem>
+				)}
 			</DropdownMenuContent>
 		</DropdownMenu>
 	)

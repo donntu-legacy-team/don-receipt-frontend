@@ -54,6 +54,44 @@ export interface CategoryDto {
   subcategories: SubcategoryDto[];
 }
 
+export interface CreateCategoryDto {
+  name: string;
+}
+
+export interface UpdateCategoryDto {
+  id: number;
+  name: string;
+}
+
+export interface FullSubcategoryDto {
+  /**
+   * ID подкатегории
+   * @example "1"
+   */
+  id: number;
+  /**
+   * Название подкатегории
+   * @example "Холодные салаты"
+   */
+  name: string;
+  /**
+   * Айди родительской категории
+   * @example "1"
+   */
+  categoryId: number;
+}
+
+export interface CreateSubcategoryDto {
+  categoryId: number;
+  name: string;
+}
+
+export interface UpdateSubcategoryDto {
+  id: number;
+  categoryId: number;
+  name: string;
+}
+
 export interface TokensPairDto {
   /** Access Token */
   accessToken: string;
@@ -80,8 +118,6 @@ export interface UsersControllerGetCurrentUserData {
   user?: UserDto;
 }
 
-export type UsersControllerGetCurrentUserError = ErrorDto;
-
 export interface UsersControllerGetUserByIdData {
   user?: UserDto;
 }
@@ -91,6 +127,30 @@ export type UsersControllerGetUserByIdError = ErrorDto;
 export interface CategoriesControllerGetCategoriesData {
   categories?: CategoryDto[];
 }
+
+export interface CategoriesControllerCreateCategoryData {
+  category?: CategoryDto;
+}
+
+export type CategoriesControllerCreateCategoryError = ErrorDto;
+
+export interface CategoriesControllerUpdateCategoryData {
+  category?: CategoryDto;
+}
+
+export type CategoriesControllerUpdateCategoryError = ErrorDto;
+
+export interface SubcategoriesControllerCreateSubcategoryData {
+  subcategory?: FullSubcategoryDto;
+}
+
+export type SubcategoriesControllerCreateSubcategoryError = ErrorDto;
+
+export interface SubcategoriesControllerUpdateSubcategoryData {
+  subcategory?: FullSubcategoryDto;
+}
+
+export type SubcategoriesControllerUpdateSubcategoryError = ErrorDto;
 
 export type AuthControllerLoginData = TokensPairDto;
 
@@ -262,10 +322,9 @@ export class Api<SecurityDataType extends unknown> {
      * @request GET:/user
      * @secure
      * @response `200` `UsersControllerGetCurrentUserData` Возвращает данные пользователя
-     * @response `401` `ErrorDto` Неверный access токен
      */
     usersControllerGetCurrentUser: (params: RequestParams = {}) =>
-      this.http.request<UsersControllerGetCurrentUserData, UsersControllerGetCurrentUserError>({
+      this.http.request<UsersControllerGetCurrentUserData, any>({
         path: `/user`,
         method: "GET",
         secure: true,
@@ -278,11 +337,10 @@ export class Api<SecurityDataType extends unknown> {
      *
      * @tags Users
      * @name UsersControllerGetUserById
-     * @summary Получить пользователя по id (admin only)
+     * @summary (Администратор) Получить пользователя по id
      * @request GET:/user/{id}
      * @secure
      * @response `200` `UsersControllerGetUserByIdData` Данные пользователя
-     * @response `403` `ErrorDto` Недостаточно прав
      * @response `404` `ErrorDto` Пользователь не найден
      */
     usersControllerGetUserById: (id: number, params: RequestParams = {}) =>
@@ -302,12 +360,105 @@ export class Api<SecurityDataType extends unknown> {
      * @name CategoriesControllerGetCategories
      * @summary Получить все категории c их подкатегориями
      * @request GET:/categories
+     * @secure
      * @response `200` `CategoriesControllerGetCategoriesData`
      */
     categoriesControllerGetCategories: (params: RequestParams = {}) =>
       this.http.request<CategoriesControllerGetCategoriesData, any>({
         path: `/categories`,
         method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Categories
+     * @name CategoriesControllerCreateCategory
+     * @summary (Администратор) Создать категорию
+     * @request POST:/categories
+     * @secure
+     * @response `200` `CategoriesControllerCreateCategoryData` Категория успешно создана
+     * @response `400` `ErrorDto` Категория с таким названием уже существует
+     */
+    categoriesControllerCreateCategory: (data: CreateCategoryDto, params: RequestParams = {}) =>
+      this.http.request<CategoriesControllerCreateCategoryData, CategoriesControllerCreateCategoryError>({
+        path: `/categories`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Categories
+     * @name CategoriesControllerUpdateCategory
+     * @summary (Администратор) Обновить категорию
+     * @request PUT:/categories
+     * @secure
+     * @response `200` `CategoriesControllerUpdateCategoryData` Категория успешно обновлена
+     * @response `400` `ErrorDto` Категория с таким названием уже существует
+     * @response `404` `ErrorDto` Категория с таким id не существует
+     */
+    categoriesControllerUpdateCategory: (data: UpdateCategoryDto, params: RequestParams = {}) =>
+      this.http.request<CategoriesControllerUpdateCategoryData, CategoriesControllerUpdateCategoryError>({
+        path: `/categories`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
+  subcategories = {
+    /**
+     * No description
+     *
+     * @tags Subcategories
+     * @name SubcategoriesControllerCreateSubcategory
+     * @summary (Администратор) Создать подкатегорию для категории
+     * @request POST:/subcategories
+     * @secure
+     * @response `200` `SubcategoriesControllerCreateSubcategoryData` Подкатегория успешно создана
+     * @response `400` `ErrorDto` Подкатегория для категории с таким названием уже существует
+     * @response `404` `ErrorDto` Категория с таким id не существует
+     */
+    subcategoriesControllerCreateSubcategory: (data: CreateSubcategoryDto, params: RequestParams = {}) =>
+      this.http.request<SubcategoriesControllerCreateSubcategoryData, SubcategoriesControllerCreateSubcategoryError>({
+        path: `/subcategories`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Subcategories
+     * @name SubcategoriesControllerUpdateSubcategory
+     * @summary (Администратор) Обновить подкатегорию категории
+     * @request PUT:/subcategories
+     * @secure
+     * @response `200` `SubcategoriesControllerUpdateSubcategoryData` Подкатегория успешно обновлена
+     * @response `404` `ErrorDto` Категория с таким id не существует / Подкатегория с таким id не существует
+     */
+    subcategoriesControllerUpdateSubcategory: (data: UpdateSubcategoryDto, params: RequestParams = {}) =>
+      this.http.request<SubcategoriesControllerUpdateSubcategoryData, SubcategoriesControllerUpdateSubcategoryError>({
+        path: `/subcategories`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
         format: "json",
         ...params,
       }),
@@ -321,7 +472,7 @@ export class Api<SecurityDataType extends unknown> {
      * @summary Вход пользователя и получение токенов
      * @request POST:/auth/login
      * @response `200` `AuthControllerLoginData` Возвращает accessToken и refreshToken
-     * @response `401` `ErrorDto` Неверные учетные данные
+     * @response `400` `ErrorDto` Неверные учетные данные
      */
     authControllerLogin: (data: LoginDto, params: RequestParams = {}) =>
       this.http.request<AuthControllerLoginData, AuthControllerLoginError>({
@@ -341,7 +492,7 @@ export class Api<SecurityDataType extends unknown> {
      * @summary Обновление токенов
      * @request POST:/auth/refresh
      * @response `200` `AuthControllerRefreshData` Возвращает новые accessToken и refreshToken
-     * @response `401` `ErrorDto` Неверный refresh токен
+     * @response `400` `ErrorDto` Неверный refresh токен
      */
     authControllerRefresh: (data: RefreshTokenDto, params: RequestParams = {}) =>
       this.http.request<AuthControllerRefreshData, AuthControllerRefreshError>({

@@ -1,0 +1,16 @@
+@import '../../../../app/styles/globals.css';
+
+.ProseMirror-focused {
+    @apply outline-none;
+}
+
+.tiptap {
+  p.is-editor-empty:first-child::before,
+  h3.is-editor-empty:first-child::before {
+    @apply text-gray-400;
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+  }
+}

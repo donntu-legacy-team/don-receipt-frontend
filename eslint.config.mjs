@@ -20,6 +20,7 @@ const eslintConfig = [
 		rules: {
 			'@stylistic/semi': ['warn', 'never'],
 			'@stylistic/quotes': ['warn', 'single'],
+			'@stylistic/jsx-quotes': ['warn', 'prefer-double'],
 			'@stylistic/comma-dangle': ['warn', 'always-multiline'],
 			'@stylistic/block-spacing': ['warn', 'always'],
 			'@stylistic/object-curly-spacing': ['warn', 'always'],
