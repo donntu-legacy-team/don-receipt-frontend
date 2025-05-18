@@ -26,7 +26,7 @@ export const UserMenu = (props: UserMenuProps) => {
 				<DropdownMenuSeparator/>
 				{props.onSignOutClick && (
 					<DropdownMenuItem
-						className="text-destructive"
+						variant="destructive"
 						onClick={props.onSignOutClick}
 					>
 						<LogOutIcon size="20px"/>
