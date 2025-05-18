@@ -7,9 +7,9 @@ const MyProfilePage = () => {
 
 	return (
 		<section>
-			<h1>
+			<h2 className="text-3xl font-semibold mb-4">
 				Мой профиль
-			</h1>
+			</h2>
 			{user.currentUser && (
 				<MyProfile
 					user={user.currentUser}

@@ -11,7 +11,7 @@ export type ReceiptEditorProps = {
 
 export const ReceiptEditor = (props: ReceiptEditorProps) => {
 	return (
-		<div className="prose prose-lg lg:prose-xl">
+		<div className="prose prose-lg lg:prose-xl max-w-full">
 			<TitleEditor
 				isEditable={props.isEditable}
 				onTitleUpdate={console.log}

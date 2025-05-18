@@ -12,7 +12,7 @@ import Placeholder from '@tiptap/extension-placeholder'
 
 import CharacterCount from '@tiptap/extension-character-count'
 
-export const TITLE_CHARACTER_COUNT_LIMIT = 300
+export const TITLE_CHARACTER_COUNT_LIMIT = 150
 
 export const titleEditorConfig: UseEditorOptions = {
 	extensions: [
