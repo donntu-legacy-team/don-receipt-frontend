@@ -28,7 +28,7 @@ export const AuthorizedOnly = (props: AuthorizedOnlyProps) => {
 		}
 
 		return (
-			<div className='h-full flex items-center justify-center'>
+			<div className="h-full flex items-center justify-center">
 				<LoaderCircleIcon className="animate-spin"/>
 			</div>
 		)

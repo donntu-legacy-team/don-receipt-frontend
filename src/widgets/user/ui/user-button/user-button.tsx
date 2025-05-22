@@ -31,6 +31,10 @@ export const UserButton = () => {
 		router.push(ROUTES.MY_PROFILE)
 	}
 
+	const onMyDraftsClick = () => {
+		router.push(ROUTES.MY_DRAFTS)
+	}
+
 	if (isLoadingUser){
 		return (
 			<Button className="w-[94px]">
@@ -50,6 +54,7 @@ export const UserButton = () => {
 				)}
 				onSignOutClick={onSignOutClick}
 				onMyProfileClick={onMyProfileClick}
+				onMyDraftsClick={onMyDraftsClick}
 			/>
 		)
 	}

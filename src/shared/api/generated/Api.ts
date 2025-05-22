@@ -114,6 +114,67 @@ export interface CreateUserDto {
   password: string;
 }
 
+export interface ReceiptDto {
+  /**
+   * Уникальный идентификатор рецепта
+   * @example 1
+   */
+  id: number;
+  /**
+   * Заголовок рецепта
+   * @example "Борщ"
+   */
+  title: string;
+  /**
+   * Пошаговый текст рецепта
+   * @example "Нарезать овощи..."
+   */
+  receiptContent: string;
+  /** Статус рецепта */
+  receiptStatus: "DRAFT" | "PUBLISHED" | "ON_MODERATION" | "ARCHIVED";
+  /**
+   * ID автора (пользователя)
+   * @example 42
+   */
+  authorId: number;
+  /**
+   * Дата создания
+   * @format date-time
+   * @example "2025-05-10T12:34:56.789Z"
+   */
+  createdAt: string;
+  /**
+   * Дата последнего обновления
+   * @format date-time
+   * @example "2025-05-10T12:34:56.789Z"
+   */
+  updatedAt: string;
+  /**
+   * Дата публикации рецепта
+   * @example "2025-05-10T12:34:56.789Z"
+   */
+  publishedAt?: object | null;
+  subcategory?: SubcategoryDto | null;
+}
+
+export interface CreateReceiptDraftDto {
+  title?: string;
+  receiptContent?: string;
+  /** ID категории */
+  categoryId?: number;
+  /** ID подкатегории */
+  subcategoryId?: number;
+}
+
+export interface UpdateReceiptDraftDto {
+  title?: string;
+  receiptContent?: string;
+  /** ID категории */
+  categoryId?: number;
+  /** ID подкатегории */
+  subcategoryId?: number;
+}
+
 export interface UsersControllerGetCurrentUserData {
   user?: UserDto;
 }
@@ -165,6 +226,53 @@ export interface AuthControllerRegisterData {
 }
 
 export type AuthControllerRegisterError = ErrorDto;
+
+export interface ReceiptsControllerCreateDraftData {
+  receipt?: ReceiptDto;
+}
+
+export interface ReceiptsControllerGetDraftsData {
+  receipts?: ReceiptDto[];
+}
+
+export interface ReceiptsControllerUpdateDraftData {
+  receipt?: ReceiptDto;
+}
+
+export type ReceiptsControllerUpdateDraftError = ErrorDto;
+
+export interface ReceiptsControllerGetDraftByIdData {
+  receipt?: ReceiptDto;
+}
+
+export type ReceiptsControllerGetDraftByIdError = ErrorDto;
+
+export interface ReceiptsControllerPublishDraftData {
+  receipt?: ReceiptDto;
+}
+
+export type ReceiptsControllerPublishDraftError = ErrorDto;
+
+export interface ReceiptsControllerGetAllPublishedParams {
+  /** Текст для поиска по заголовку и содержимому рецепта */
+  searchText?: string;
+  /** ID автора рецептов */
+  authorId?: number;
+  /** ID категории рецептов */
+  categoryId?: number;
+  /** ID подкатегории рецептов (имеет приоритет над categoryId) */
+  subcategoryId?: number;
+}
+
+export interface ReceiptsControllerGetAllPublishedData {
+  receipts?: ReceiptDto[];
+}
+
+export interface ReceiptsControllerGetPublishedByIdData {
+  receipt?: ReceiptDto;
+}
+
+export type ReceiptsControllerGetPublishedByIdError = ErrorDto;
 
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse, HeadersDefaults, ResponseType } from "axios";
 import axios from "axios";
@@ -520,6 +628,153 @@ export class Api<SecurityDataType extends unknown> {
         method: "POST",
         body: data,
         type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+  };
+  receipts = {
+    /**
+     * No description
+     *
+     * @tags receipts
+     * @name ReceiptsControllerCreateDraft
+     * @summary Создать новый черновик рецепта
+     * @request POST:/receipts/drafts
+     * @secure
+     * @response `200` `ReceiptsControllerCreateDraftData` Черновик успешно создан
+     */
+    receiptsControllerCreateDraft: (data: CreateReceiptDraftDto, params: RequestParams = {}) =>
+      this.http.request<ReceiptsControllerCreateDraftData, any>({
+        path: `/receipts/drafts`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags receipts
+     * @name ReceiptsControllerGetDrafts
+     * @summary Получить все черновики текущего пользователя
+     * @request GET:/receipts/drafts
+     * @secure
+     * @response `200` `ReceiptsControllerGetDraftsData` Список черновиков пользователя
+     */
+    receiptsControllerGetDrafts: (params: RequestParams = {}) =>
+      this.http.request<ReceiptsControllerGetDraftsData, any>({
+        path: `/receipts/drafts`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags receipts
+     * @name ReceiptsControllerUpdateDraft
+     * @summary Обновить существующий черновик рецепта
+     * @request PUT:/receipts/drafts/{id}
+     * @secure
+     * @response `200` `ReceiptsControllerUpdateDraftData` Черновик успешно обновлен
+     * @response `400` `ErrorDto` Можно редактировать только черновики
+     * @response `403` `ErrorDto` Доступ запрещён
+     * @response `404` `ErrorDto` Черновик не найден
+     */
+    receiptsControllerUpdateDraft: (id: number, data: UpdateReceiptDraftDto, params: RequestParams = {}) =>
+      this.http.request<ReceiptsControllerUpdateDraftData, ReceiptsControllerUpdateDraftError>({
+        path: `/receipts/drafts/${id}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags receipts
+     * @name ReceiptsControllerGetDraftById
+     * @summary Получить черновик рецепта по id (только для автора)
+     * @request GET:/receipts/drafts/{id}
+     * @secure
+     * @response `200` `ReceiptsControllerGetDraftByIdData` Черновик рецепта
+     * @response `404` `ErrorDto` Черновик не найден
+     */
+    receiptsControllerGetDraftById: (id: number, params: RequestParams = {}) =>
+      this.http.request<ReceiptsControllerGetDraftByIdData, ReceiptsControllerGetDraftByIdError>({
+        path: `/receipts/drafts/${id}`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags receipts
+     * @name ReceiptsControllerPublishDraft
+     * @summary Опубликовать черновик рецепта
+     * @request PUT:/receipts/publish/{id}
+     * @secure
+     * @response `200` `ReceiptsControllerPublishDraftData` Черновик успешно опубликован
+     * @response `400` `ErrorDto` Нельзя публиковать не-черновики или черновики без подкатегории
+     * @response `403` `ErrorDto` Доступ запрещён
+     * @response `404` `ErrorDto` Черновик не найден
+     */
+    receiptsControllerPublishDraft: (id: number, params: RequestParams = {}) =>
+      this.http.request<ReceiptsControllerPublishDraftData, ReceiptsControllerPublishDraftError>({
+        path: `/receipts/publish/${id}`,
+        method: "PUT",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags receipts
+     * @name ReceiptsControllerGetAllPublished
+     * @summary Получить все опубликованные рецепты
+     * @request GET:/receipts
+     * @secure
+     * @response `200` `ReceiptsControllerGetAllPublishedData` Список опубликованных рецептов
+     */
+    receiptsControllerGetAllPublished: (query: ReceiptsControllerGetAllPublishedParams, params: RequestParams = {}) =>
+      this.http.request<ReceiptsControllerGetAllPublishedData, any>({
+        path: `/receipts`,
+        method: "GET",
+        query: query,
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags receipts
+     * @name ReceiptsControllerGetPublishedById
+     * @summary Получить опубликованный рецепт по id
+     * @request GET:/receipts/{id}
+     * @secure
+     * @response `200` `ReceiptsControllerGetPublishedByIdData` Опубликованный рецепт
+     * @response `404` `ErrorDto` Рецепт не найден
+     */
+    receiptsControllerGetPublishedById: (id: number, params: RequestParams = {}) =>
+      this.http.request<ReceiptsControllerGetPublishedByIdData, ReceiptsControllerGetPublishedByIdError>({
+        path: `/receipts/${id}`,
+        method: "GET",
+        secure: true,
         format: "json",
         ...params,
       }),

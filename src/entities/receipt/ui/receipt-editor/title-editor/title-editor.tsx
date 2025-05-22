@@ -15,7 +15,7 @@ export const TitleEditor = (props: TitleEditorProps) => {
 			{...titleEditorConfig}
 			content={props.title}
 			editable={props.isEditable ?? true}
-			onUpdate={({ editor }) => props.onTitleUpdate?.(editor.getHTML())}
+			onUpdate={({ editor }) => props.onTitleUpdate?.(editor.getText())}
 		/>
 	)
 }
