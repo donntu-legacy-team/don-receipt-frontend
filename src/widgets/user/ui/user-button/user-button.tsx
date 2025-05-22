@@ -7,6 +7,7 @@ import { UserMenu } from '@/entities/user/ui/user-menu'
 import { ROUTES } from '@/shared/lib/routes'
 import { Button } from '@/shared/ui/button'
 import { ChevronDownIcon, LoaderCircleIcon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
 export const UserButton = () => {
@@ -19,9 +20,19 @@ export const UserButton = () => {
 		signOut,
 	} = useAuth()
 
+	const router = useRouter()
+
 	const onSignOutClick = () => {
 		signOut()
 		toast('Вы вышли из аккаунта')
+	}
+
+	const onMyProfileClick = () => {
+		router.push(ROUTES.MY_PROFILE)
+	}
+
+	const onMyDraftsClick = () => {
+		router.push(ROUTES.MY_DRAFTS)
 	}
 
 	if (isLoadingUser){
@@ -42,6 +53,8 @@ export const UserButton = () => {
 					</Button>
 				)}
 				onSignOutClick={onSignOutClick}
+				onMyProfileClick={onMyProfileClick}
+				onMyDraftsClick={onMyDraftsClick}
 			/>
 		)
 	}

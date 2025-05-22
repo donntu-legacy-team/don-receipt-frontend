@@ -5,11 +5,13 @@ import { withGlobalErrorHandler } from './wrapper/with-global-error-handler'
 import { withAuthorization } from './wrapper/with-authorization'
 import { withUnauthorizedHandler } from './wrapper/with-unauthorized-handler'
 import { UserApi } from './services/user.api'
+import { ReceiptApi } from './services/receipt.api'
 
 class Gateway {
 	categoryApi: CategoryApi
 	authApi: AuthApi
 	userApi: UserApi
+	receiptApi: ReceiptApi
 
 	constructor(private httpClient: HttpClient) {
 
@@ -17,6 +19,7 @@ class Gateway {
 		this.categoryApi = new CategoryApi(api)
 		this.authApi = new AuthApi(api)
 		this.userApi = new UserApi(api)
+		this.receiptApi = new ReceiptApi(api)
 	}
 }
 

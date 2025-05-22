@@ -8,3 +8,8 @@ pre-commit:
     - name: typescript
       run: npm run typescript
       glob: "*.{js,ts,jsx,tsx}"
+
+prepare-commit-msg:
+  scripts:
+    "add-task-key":
+      runner: bash
